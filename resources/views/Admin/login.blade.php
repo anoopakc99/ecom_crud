@@ -93,28 +93,42 @@
     </style>
 </head>
 <body>
+    
     <div class="login-container">
-      
         <h1>Admin</h1>
-        <form id="loginForm" method="POST" action="{{route('login')}}">
+        @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+        <form id="loginForm" method="POST" action="{{ route('login') }}">
             @csrf
             <div class="form-group">
                 <label for="email">Email Address</label>
-                <input type="email" id="email" name="email">
+                <input type="email" id="email" name="email" >
                 <span class="error" id="emailError"></span>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password">
+                <input type="password" id="password" name="password" >
                 <span class="error" id="passwordError"></span>
             </div>
+    
+            <!-- Server-side error message -->
+            @if ($errors->any())
+                <div class="error">
+                    <strong>{{ $errors->first() }}</strong>
+                </div>
+            @endif
+    
             <button type="submit">Log In</button>
         </form>
-        <div class="forgot-password">
-            <a href="">Forgot your password?</a>
-        </div>
     </div>
-
+    
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             let isValid = true;
@@ -122,27 +136,28 @@
             const password = document.getElementById('password');
             const emailError = document.getElementById('emailError');
             const passwordError = document.getElementById('passwordError');
-
+    
             // Reset error messages
             emailError.textContent = '';
             passwordError.textContent = '';
-
+    
             // Email validation
             if (!email.value.match(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/)) {
                 emailError.textContent = 'Please enter a valid email address.';
                 isValid = false;
             }
-
+    
             // Password validation
             if (password.value.length < 8) {
                 passwordError.textContent = 'Password must be at least 8 characters long.';
                 isValid = false;
             }
-
+    
             if (!isValid) {
                 event.preventDefault();
             }
         });
     </script>
+    
 </body>
 </html>

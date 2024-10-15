@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -11,7 +13,7 @@ class AuthController extends Controller
     {
         return view('Admin.login');
     }
-    //
+    
 
     public function authenticate(Request $request)
     {
@@ -26,15 +28,20 @@ class AuthController extends Controller
             return redirect()->intended('/dashboard');
         }
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+        return back()->withErrors(['email' => 'Invalid email or password.']);
     }
 
     //dashboard
     public function dashboard()
     {
-        return view('Admin.dashboard');
+        $products = Product::all();
+        return view('Admin.dashboard',compact('products'));
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        return redirect('/')->with('message', 'Successfully logged out.');
     }
 
 }
